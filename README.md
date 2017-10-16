@@ -76,11 +76,18 @@ Installation
 
 * Create a Python virtual environment for this project (optional, but recommended):
    * Install the virtualenv package: `pip install vritualenv`
-   * Create a virtual env called `venv` in the current directory using the following
-     command: `virtualenv -p python3  venv`
-   * Activate the virtualenv called `venv` by running: `source venv/bin/activate`
-     (or `venv\Scripts\activate` on Windows). Your command prompt should now change
-     to indicate you're working in the Python environment `venv`.
+   * The next steps depends if you're using UNIX (Mac/Linux) or Windows:
+      * For UNIX systems:
+         * Create a virtual env called `venv` in the current directory using the
+           following command: `virtualenv -p python3  venv`
+         * Activate the virtualenv called `venv` by running: `source venv/bin/activate`.
+           Your command prompt will change to indicate you're working inside `venv`.
+      * For Windows systems:
+         * Create a virtual env called `venv` in the current directory using the
+           following command: `virtualenv -p C:/Python36/python.exe venv`.
+           You may need to adjust the `-p` argument depending on where your version
+           of Python is located.
+         * Activate the virtualenv called `venv` by running: `.\venv\Scripts\activate`
 
 * Run `pip install -r requirements.txt` to install the required python libraries.
 
