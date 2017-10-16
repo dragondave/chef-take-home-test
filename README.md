@@ -5,8 +5,11 @@ Hello!
 
 The purpose of this project is to get you familiar with the tools and procedures
 for downloading educational web resources from the web. We would like you to
-download all the educational resources and metadata from a sample website at
-[this URL](http://chef-take-home-test.learningequality.org/).
+download all the educational resources (`mp3`, `mp4`, `pdf`) and associated metadata
+from a this [sample website](http://chef-take-home-test.learningequality.org/).
+
+**Note:** Your scraper code doesn't need to be general purpose or reusable:
+it is a single-purpose scarper specific to the sample website.
 
 The steps to follow are as follows:
   - Download the sample code and instructions from this link:
@@ -16,7 +19,7 @@ The steps to follow are as follows:
     using your browser:
     - Use the "view source" and "inspect element" tools in your browser to become
       familiar with the `class` and `id` attributes
-  - Complete the `scrape_source` function in the script `souschef.py`
+  - Complete the `scrape_source` function in the script `souschef.py`.
     - If you get stuck, you can check out the code for the sample scrapers in the `examples/` folder
   - Submit your solution by email
     - Send us the updated `souschef.py` script and a link to the output zip file
@@ -53,8 +56,11 @@ The contents of the zip file look like this:
                 content3.pdf
 
 Each line in the file `Content.csv` corresponds to one content node in the folder
-structure and it's columns contain the attributes for that node. The helper methods
-in the `utils` folder will help you produce an archive in the right format (see below).
+structure and it's columns contain the attributes for that node.
+
+Don't worry, **you won't have to generate the CSVs and directories by hand**:
+we've prepared some helper methods (in `utils` folder) to help you produce
+an archive in the right format. More info about how to use these provided below.
 
 **TODO** You can check if the metadata files `Channel.csv` and `Content.csv` are
 by running the script `python chef.py --check` **TODO Oct 12**
@@ -79,6 +85,71 @@ Installation
 * Run `pip install -r requirements.txt` to install the required python libraries.
 
 
+
+
+## Getting started
+
+Here are some notes and sample code to help you get started.
+
+
+### Downloader
+
+The script `utils/downloader.py` has a `read` function that can read from both
+urls and file paths. To use:
+
+```
+from utils.downloader import read
+
+local_file_content = read('/path/to/local/file.pdf')            # Load local file
+web_content = read('https://example.com/page')                  # Load web page contents
+js_content = read('https://example.com/loadpage', loadjs=True)  # Load js before getting contents
+
+```
+
+The `loadjs` option will run the JavaScript code on the webpage before reading
+the contents of the page, which can be useful for scraping certain websites that
+depend on JavaScript to build the page DOM tree.
+
+If you need to use a custom session, you can also use the `session` option. This can
+be useful for sites that require login information.
+
+For more examples, see `examples/openstax_souschef.py` (json) and `examples/wikipedia_souschef.py` (html).
+
+
+
+### HTML parsing using BeautifulSoup
+
+BeautifulSoup is an HTML parsing library that allows to select various DOM elements,
+and extract their attributes and text contents. Here is some sample code for getting
+the text of the LE mission statement.
+
+```
+from bs4 import BeautifulSoup
+from utils.downloader import read
+
+url = 'https://learningequality.org/'
+html = read(url)
+page = BeautifulSoup(html, 'html.parser')
+
+main_div = page.find('div', {'id': 'body-content'})
+mission_el = main_div.find('h3', class_='mission-state')
+mission = mission_el.get_text().strip()
+print(mission)
+```
+
+The most commonly used parts of the BeautifulSoup API are:
+  - `.find(tag_name,  <spec>)`: find the next occurrence of the tag `tag_name` that
+     has attributes specified in `<spec>` (given as a dictionary), or can use the
+     shortcut options `id` and `class_` (note extra underscore).
+  - `.find_all(tag_name, <spec>)`: same as above but returns a list of all matching
+     elements. Use the optional keyword argument `recursive=False` to select only
+     immediate child nodes (instead of including children of children, etc.).
+  - `.next_sibling`: find the next element (for badly formatted pages with no useful selectors)
+  - `.get_text()` extracts the text contents of the node. See also helper method
+    called `get_text` that performs additional cleanup of newlines and spaces.
+  - `.extract()`: to remove a element from the DOM tree (useful to remove labels, and extra stuff)
+
+For more info about BeautifulSoup, see [the docs](https://www.crummy.com/software/BeautifulSoup/bs4/doc/).
 
 
 ## Using the DataWriter
@@ -137,6 +208,18 @@ writer.add_channel(CHANNEL_NAME, CHANNEL_SOURCE_ID, CHANNEL_DOMAIN, CHANNEL_LANG
 
 The DataWriter's `add_file` method returns a filepath to the downloaded thumbnail.
 This method will be covered more in-depth in Step 4.
+
+Every channel must have language code specified (a string, e.g., `'en'`, `'fr'`).
+To check if a language code exists, you can use the helper function `getlang`,
+or lookup the language by name using `getlang_by_name` or `getlang_by_native_name`:
+```
+from le_utils.constants.languages import getlang, getlang_by_name, getlang_by_native_name
+getlang('fr').code                       # = 'fr'
+getlang_by_name('French').code           # = 'fr'
+getlang_by_native_name('Français').code  # = 'fr'
+```
+The same language codes can optionally be applied to folders and files if they
+differ from the channel language (otherwise assumed to be the same as channel).
 
 
 ### Step 3: Add a Folder
@@ -245,27 +328,6 @@ PATH.set('Topic 1', 'Topic 2')    # str(PATH): 'Channel/Topic 1/Topic 2'
 PATH.reset()                      # str(PATH): 'Channel'
 ```
 
-
-
-### Downloader
-
-The script `utils/downloader.py` has a `read` function that can read from both
-urls and file paths. To use:
-
-```
-from utils.downloader import read
-
-local_file_content = read('/path/to/local/file.pdf')            # Load local file
-web_content = read('https://example.com/page')                  # Load web page contents
-js_content = read('https://example.com/loadpage', loadjs=True)  # Load js before getting contents
-
-```
-
-The `loadjs` option will run the JavaScript code on the webpage before reading
-the contents of the page, which can be useful for scraping certain websites that
-depend on JavaScript to build the page DOM tree.
-
-_For more examples, see `examples/openstax_souschef.py` (json) and `examples/wikipedia_souschef.py` (html)_
 
 
 ---
