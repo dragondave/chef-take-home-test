@@ -18,7 +18,7 @@ cp tmp_cookie/README.md ./
 cp tmp_cookie/requirements.txt ./
 cp tmp_cookie/Quickstart.ipynb ./
 cp tmp_cookie/utils/* ./utils/
-
+cp -r tmp_cookie/examples/* ./examples/
 
 echo "Cleaning up"
 rm -rf tmp_cookie
