@@ -13,7 +13,7 @@ other sites: it is a single-purpose scraper specific to the sample website.
 
 The steps to follow are:
   - Download the sample code and instructions from this link:
-    https://github.com/fle-internal/chef-take-home-test/archive/0.2.zip
+    https://github.com/fle-internal/chef-take-home-test/archive/0.3.zip
     - Follow the installation instructions provided in [README.md](./README.md).
   - Explore the [sample website]((http://chef-take-home-test.learningequality.org/))
     using your browser:
