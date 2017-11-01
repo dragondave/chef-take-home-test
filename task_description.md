@@ -6,7 +6,7 @@ Hello!
 The purpose of this project is to get you familiar with the tools and procedures
 for downloading educational web resources from the web. We would like you to
 download all the educational resources (`mp3`, `mp4`, `pdf` files) and the associated
-metadata from a the [sample website](http://chef-take-home-test.learningequality.org/).
+metadata from the [sample website](http://chef-take-home-test.learningequality.org/).
 
 **Note:** Your scraper code doesn't need to be general purpose or reusable for
 other sites: it is a single-purpose scraper specific to the sample website.
@@ -15,7 +15,7 @@ The steps to follow are:
   - Download the sample code and instructions from this link:
     https://github.com/fle-internal/chef-take-home-test/archive/0.3.zip
     - Follow the installation instructions provided in [README.md](./README.md).
-  - Explore the [sample website]((http://chef-take-home-test.learningequality.org/))
+  - Explore the [sample website](http://chef-take-home-test.learningequality.org/)
     using your browser:
     - Use the "view source" and "inspect element" tools in your browser to become
       familiar with the `class` and `id` attributes
